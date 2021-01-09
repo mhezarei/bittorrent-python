@@ -33,9 +33,9 @@ object could look something like this (written in C):
     ```
 
 `rtUpdate()`:
-- This function is called whenever a node receives a `routing packet` from one
-of its neighbors.
-- We should update the distance table based on the `routing packet` and
+- This function is called whenever a node receives a `routing packet` object 
+from one of its neighbors.
+- We should update the distance table based on the `routing packet` object and
 announce the new distance table to the neighbors via `toNode()` function
 (if any changes were made).
 
