@@ -16,7 +16,7 @@ network containing 4 nodes shown below:
 We need to implement the functions below for each node and run them
 asynchronously:
 
-`rinit()`:
+`rtinit()`:
 - It has no input arguments.
 - Initializes node's distance table.
 - After initialization, sends the vector of minimum-cost path to all nodes 
