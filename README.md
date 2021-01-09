@@ -9,7 +9,9 @@ Computer Networks course.
 This assignment's task is to build a Distance-Vector algorithm for a small
 network containing 4 nodes shown below:
 
-<div style="text-align: center"><img src="./CA/nodes.png" alt=""></div>
+<p align="center" width="100%">
+<img src="./CA/nodes.png" alt="network nodes">
+</p>
 
 We need to implement the functions below for each node and run them
 asynchronously:
