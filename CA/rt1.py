@@ -1,6 +1,5 @@
-import socket
 import time
-from CA.util import *
+from CA.utils import *
 from CA.routing_packet import *
 
 ROUTER_ID = get_router_id(__file__)
@@ -8,7 +7,7 @@ ROUTER_ID = get_router_id(__file__)
 
 def init() -> dict:
     # Find the neighbors e.g. each node with a non-infinite cost
-    neighbors = [i for i, cost in enumerate(base_cost) if
+    neighbors = [i for i, cost in enumerate(base_cost[ROUTER_ID]) if
                  cost != INF and i != ROUTER_ID]
     table = make_routing_table(neighbors)
 
@@ -39,16 +38,11 @@ def transfer(rp: RoutingPacket) -> None:
     send_s.close()
 
 
-def create_socket(port: int) -> socket.socket:
-    s = socket.socket()
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind(('127.0.0.1', port))
-    return s
-
-
 def main():
     rec_sock = create_socket(rec_ports[ROUTER_ID])
     rec_sock.listen(10)
+    time.sleep(SLEEP_SECS)
+    table = init()
     time.sleep(SLEEP_SECS)
     table = init()
 

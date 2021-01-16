@@ -1,5 +1,5 @@
 import re
-
+import socket
 
 SLEEP_SECS = 1
 INF = 'inf'
@@ -38,3 +38,10 @@ def get_router_id(path: str) -> int:
     filename = str(path).split('/')[-1]
     filename = re.sub(r"[^\d]", "", filename)
     return int(filename)
+
+
+def create_socket(port: int) -> socket.socket:
+    s = socket.socket()
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind(('localhost', port))
+    return s
