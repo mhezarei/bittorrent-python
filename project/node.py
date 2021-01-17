@@ -85,7 +85,6 @@ class Node:
         print(self.received_files)
         # check if there is a missing range
 
-
         # TODO add algorithm
 
     def transfer_file(self, filename: str, rng: Tuple[int, int], owner: tuple):
