@@ -14,7 +14,7 @@ class UDPDatagram:
         self.data = data
 
     def encode(self) -> bytes:
-        return yaml.dump(self)
+        return yaml.dump(self).encode()
 
     @staticmethod
     def decode(data: bytes):

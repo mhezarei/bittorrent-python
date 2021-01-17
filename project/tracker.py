@@ -1,10 +1,13 @@
 import json
 import random
 import threading
+from typing import Tuple
+
+from project.messages.message import Message
 from project.utils import *
 from collections import defaultdict
 from project.node import Node
-from project import modes
+from project.messages import modes
 from project.messages.tracker_to_node import TrackerToNode
 
 DEBUG_MODE = True
@@ -14,7 +17,7 @@ class Tracker:
     def __init__(self):
         self.nodes = []
         self.open_ports = (1024, 49151)  # available user ports
-        self.tracker_s = create_socket(TRACKER_PORT)
+        self.tracker_s = create_socket(TRACKER_ADDR[1])
         self.uploader_list = defaultdict(list)
 
     def add_node(self, node: Node):
@@ -24,18 +27,27 @@ class Tracker:
         rand_port = random.randint(self.open_ports[0], self.open_ports[1])
         return rand_port
 
+    def send_datagram(self, message: bytes, addr: Tuple[str, int]):
+        dg = UDPDatagram(port_number(self.tracker_s), addr[1], message)
+        self.tracker_s.sendto(dg.encode(), addr)
+
     def handle_node(self, data, addr):
-        packet = json.loads(data.decode())
-        packet_mode = packet['mode']
-        if packet_mode == modes.HAVE:
-            self.add_uploader(packet, addr)
-        elif packet_mode == modes.NEED:
-            self.search_file(packet, addr)
+        dg = UDPDatagram.decode(data)
+        message = Message.decode(dg.data)
+        print(message)
+        message_mode = message['mode']
+        if message_mode == modes.HAVE:
+            self.add_uploader(message, addr)
+        elif message_mode == modes.NEED:
+            self.search_file(message, addr)
+        elif message_mode == modes.EXIT:
+            # TODO ADD EXIT
+            pass
 
     def listen(self):
         while True:
             data, addr = self.tracker_s.recvfrom(1024)
-            t = threading.Thread(target=self.handle_node(data, addr))
+            t = threading.Thread(target=self.handle_node, args=(data, addr))
             t.start()
 
     def start(self):
@@ -44,9 +56,9 @@ class Tracker:
         t.start()
         t.join()
 
-    def add_uploader(self, packet, addr):
-        node_name = packet['name']
-        filename = packet['message']
+    def add_uploader(self, message, addr):
+        node_name = message['name']
+        filename = message['filename']
         item = {
             'name': node_name,
             'ip': addr[0],
@@ -55,19 +67,18 @@ class Tracker:
         self.uploader_list[filename].append(json.dumps(item))
         self.uploader_list[filename] = list(set(self.uploader_list[filename]))
         if DEBUG_MODE:
-            print("Current uploader list :", self.uploader_list)
+            print(f"Current uploader list:\n{self.uploader_list}")
 
-    def search_file(self, packet, addr):
-        node_name = packet['name']
-        filename = packet['message']
+    def search_file(self, message, addr):
+        node_name = message['name']
+        filename = message['filename']
         search_result = []
         for item_json in self.uploader_list[filename]:
             item = json.loads(item_json)
             search_result.append((item['name'], item['ip'], item['port']))
-        response = TrackerToNode(node_name, search_result, filename)
-        s = create_socket(self.give_port())
-        s.sendto(str.encode(response.get()), (addr[0], addr[1]))
-        s.close()
+
+        response = TrackerToNode(node_name, search_result, filename).encode()
+        self.send_datagram(response, addr)
 
 
 def main():

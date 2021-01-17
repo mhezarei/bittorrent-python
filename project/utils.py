@@ -1,9 +1,7 @@
 import socket
 from project.datagram import *
 
-TRACKER_IP = 'localhost'
-TRACKER_PORT = 12340
-
+TRACKER_ADDR = ('localhost', 12340)
 
 
 def split_file(path: str, chunk_size: int = MAX_DATA_SIZE) -> list:

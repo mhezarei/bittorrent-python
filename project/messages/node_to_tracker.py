@@ -1,8 +1,8 @@
-import json
+from project.messages.message import Message
 
 
-class NodeToTracker:
-    def __init__(self, name: str, mode: str, message: str):
+class NodeToTracker(Message):
+    def __init__(self, name: str, mode: str, filename: str):
         """
         examples:
             {name, "need", filename}
@@ -11,9 +11,7 @@ class NodeToTracker:
         """
         # add assertions
 
+        super().__init__()
         self.name = name
         self.mode = mode
-        self.message = message
-
-    def get(self) -> str:
-        return json.dumps(self.__dict__)
+        self.filename = filename
