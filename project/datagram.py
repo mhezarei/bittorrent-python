@@ -1,3 +1,4 @@
+from __future__ import annotations
 import yaml
 
 MAX_DATA_SIZE = 65507
@@ -17,5 +18,5 @@ class UDPDatagram:
         return yaml.dump(self).encode()
 
     @staticmethod
-    def decode(data: bytes):
+    def decode(data: bytes) -> UDPDatagram:
         return yaml.full_load(data)

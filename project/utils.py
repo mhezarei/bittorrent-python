@@ -1,11 +1,16 @@
 import socket
+from typing import Tuple
+
 from project.datagram import *
 
 TRACKER_ADDR = ('localhost', 12340)
 
 
-def split_file(path: str, chunk_size: int = MAX_DATA_SIZE) -> list:
+def split_file(path: str, rng: Tuple[int, int],
+               chunk_size: int = MAX_DATA_SIZE) -> list:
     assert chunk_size > 0, print("The chunk size should be bigger than 0.")
+
+    # TODO get a part of the file and split it
 
     ret = []
     with open(path, "rb") as f:

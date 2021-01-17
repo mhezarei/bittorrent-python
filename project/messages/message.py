@@ -9,5 +9,5 @@ class Message:
         return yaml.dump(self.__dict__).encode()
 
     @staticmethod
-    def decode(data: bytes):
+    def decode(data: bytes) -> dict:
         return yaml.full_load(data)
