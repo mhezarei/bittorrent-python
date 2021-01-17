@@ -1,3 +1,6 @@
+import json
+
+
 class NodeToTracker:
     def __init__(self, name: str, mode: str, message: str):
         """
@@ -12,5 +15,8 @@ class NodeToTracker:
         self.mode = mode
         self.message = message
 
-    def get(self) -> dict:
-        return self.__dict__
+    def get(self) -> str:
+        return json.dumps(self.__dict__)
+
+    def dict2obj(dict):
+        return json.loads(json.dumps(dict), object_hook=NodeToTracker)

@@ -1,7 +1,7 @@
 import os
 import sys
 import threading
-
+from project.messages.node_to_tracker import NodeToTracker
 from project.utils import *
 
 
@@ -33,7 +33,9 @@ class Node:
         pass
 
     def set_upload(self, filename: str):
-        # tell tracker which files you want to
+        # TODO tell tracker which files you want to
+        packet = NodeToTracker(self.name, "have", filename)
+        self.send_s.sendto(str.encode(packet.get()), (TRACKER_IP, TRACKER_PORT))
         pass
 
     def exit(self):
@@ -42,7 +44,7 @@ class Node:
 
     def start(self):
         # we need a file
-        self.send_s.sendto(b"asdasdasd", ("localhost", tracker_port))
+        # self.send_s.sendto(b"asdasdasd", (TRACKER_IP, TRACKER_PORT))
         while True:
             data, addr = self.send_s.recvfrom(1024)
             print(data, addr, self.send_s.getsockname()[1])
@@ -51,9 +53,7 @@ class Node:
 def main(name: str, port1: int, port2: int):
     node = Node(name, port1, port2)
     # make start a thread
-    t = threading.Thread(target=node.start())
-    t.start()
-
+    threading.Thread(target=node.start).start()
     command = input()
     while True:
         if "upload" in command:
