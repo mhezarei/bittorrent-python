@@ -5,6 +5,7 @@ from project.utils import *
 from collections import defaultdict
 from project.node import Node
 from project import modes
+from project.messages.tracker_to_node import TrackerToNode
 
 DEBUG_MODE = True
 
@@ -28,9 +29,8 @@ class Tracker:
         packet_mode = packet['mode']
         if packet_mode == modes.HAVE:
             self.add_uploader(packet, addr)
-        s = create_socket(self.give_port())
-        s.sendto(b"received", (addr[0], addr[1]))
-        s.close()
+        elif packet_mode == modes.NEED:
+            self.search_file(packet, addr)
 
     def listen(self):
         while True:
@@ -56,6 +56,18 @@ class Tracker:
         self.uploader_list[filename] = list(set(self.uploader_list[filename]))
         if DEBUG_MODE:
             print("Current uploader list :", self.uploader_list)
+
+    def search_file(self, packet, addr):
+        node_name = packet['name']
+        filename = packet['message']
+        search_result = []
+        for item_json in self.uploader_list[filename]:
+            item = json.loads(item_json)
+            search_result.append((item['ip'], item['port']))
+        response = TrackerToNode(node_name, search_result, filename)
+        s = create_socket(self.give_port())
+        s.sendto(str.encode(response.get()), (addr[0], addr[1]))
+        s.close()
 
 
 def main():

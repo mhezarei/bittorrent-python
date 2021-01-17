@@ -17,6 +17,3 @@ class NodeToTracker:
 
     def get(self) -> str:
         return json.dumps(self.__dict__)
-
-    def dict2obj(dict):
-        return json.loads(json.dumps(dict), object_hook=NodeToTracker)

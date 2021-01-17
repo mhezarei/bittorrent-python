@@ -1,6 +1,6 @@
 import os
 import sys
-import threading
+from threading import Thread
 from project.messages.node_to_tracker import NodeToTracker
 from project.utils import *
 from project import modes
@@ -24,17 +24,20 @@ class Node:
             _, _, self.files = next(os.walk(path))
 
     def search(self, filename: str):
-        # i want a file
-        pass
+        packet = NodeToTracker(self.name, modes.NEED, filename)
+        self.send_s.sendto(str.encode(packet.get()), (TRACKER_IP, TRACKER_PORT))
+        while True:
+            data, addr = self.send_s.recvfrom(1024)
+            return data
 
-    def download(self):
-        # call search
+    def download(self, filename: str):
+        search_result = self.search(filename)
+        print(search_result)
         # split the parts and assign each part to a node
         # start requesting
         pass
 
     def set_upload(self, filename: str):
-        # TODO tell tracker which files you want to
         packet = NodeToTracker(self.name, modes.HAVE, filename)
         self.send_s.sendto(str.encode(packet.get()), (TRACKER_IP, TRACKER_PORT))
         pass
@@ -47,22 +50,23 @@ class Node:
         # we need a file
         # self.send_s.sendto(b"asdasdasd", (TRACKER_IP, TRACKER_PORT))
         while True:
-            data, addr = self.send_s.recvfrom(1024)
-            print(data, addr, self.send_s.getsockname()[1])
+            data, addr = self.rec_s.recvfrom(1024)
+            print(data, addr, self.rec_s.getsockname()[1])
 
 
 def main(name: str, port1: int, port2: int):
     node = Node(name, port1, port2)
     # make start a thread
-    threading.Thread(target=node.start).start()
-    print("here")
+    Thread(target=node.start).start()
+
     command = input()
     while True:
         if "upload" in command:
             filename = command.split(' ')[2]
             node.set_upload(filename)
         elif "download" in command:
-            t2 = threading.Thread(target=node.download())
+            filename = command.split(' ')[2]
+            t2 = Thread(target=node.download, args=(filename,))
             t2.start()
         elif "exit" in command:
             node.exit()

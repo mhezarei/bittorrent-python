@@ -1,8 +1,11 @@
+import json
+
+
 class TrackerToNode:
     def __init__(self, dest_name: str, owners: list, filename: str):
         """
         examples:
-            {nameA, [B, C, D], filename}
+            {nameA, [portB, portC, portD], filename}
         """
         # add assertions
 
@@ -10,5 +13,5 @@ class TrackerToNode:
         self.owners = owners
         self.filename = filename
 
-    def get(self) -> dict:
-        return self.__dict__
+    def get(self) -> str:
+        return json.dumps(self.__dict__)
