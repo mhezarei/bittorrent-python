@@ -1,7 +1,6 @@
 import os
 import sys
 from threading import Thread
-from typing import Tuple
 from project.messages.file_communication import FileCommunication
 from project.messages.message import Message
 from project.messages.size_information import SizeInformation

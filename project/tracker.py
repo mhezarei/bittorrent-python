@@ -1,8 +1,6 @@
 import json
 import random
 import threading
-from typing import Tuple
-
 from project.messages.message import Message
 from project.utils import *
 from collections import defaultdict
