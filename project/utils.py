@@ -5,6 +5,7 @@ TRACKER_IP = 'localhost'
 TRACKER_PORT = 12340
 
 
+
 def split_file(path: str, chunk_size: int = MAX_DATA_SIZE) -> list:
     assert chunk_size > 0, print("The chunk size should be bigger than 0.")
 
