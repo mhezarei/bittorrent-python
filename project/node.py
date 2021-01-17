@@ -1,5 +1,4 @@
 import os
-import random
 import sys
 import threading
 
@@ -43,7 +42,7 @@ class Node:
 
     def start(self):
         # we need a file
-        # self.send_s.sendto(b"asdasdasd", ("localhost", tracker_port))
+        self.send_s.sendto(b"asdasdasd", ("localhost", tracker_port))
         while True:
             data, addr = self.send_s.recvfrom(1024)
             print(data, addr, self.send_s.getsockname()[1])
