@@ -63,7 +63,7 @@ class Tracker:
         search_result = []
         for item_json in self.uploader_list[filename]:
             item = json.loads(item_json)
-            search_result.append((item['ip'], item['port']))
+            search_result.append((item['name'], item['ip'], item['port']))
         response = TrackerToNode(node_name, search_result, filename)
         s = create_socket(self.give_port())
         s.sendto(str.encode(response.get()), (addr[0], addr[1]))
