@@ -1,7 +1,7 @@
 import re
 import socket
 
-SLEEP_SECS = 1
+SLEEP_SECS = 3
 INF = 'inf'
 
 send_ports = {
@@ -41,7 +41,7 @@ def get_router_id(path: str) -> int:
 
 
 def create_socket(port: int) -> socket.socket:
-    s = socket.socket()
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(('localhost', port))
     return s
