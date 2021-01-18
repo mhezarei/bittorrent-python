@@ -17,6 +17,7 @@ class Tracker:
         self.open_ports = (1024, 49151)  # available user ports
         self.tracker_s = create_socket(TRACKER_ADDR[1])
         self.uploader_list = defaultdict(list)
+        self.upload_freq_list = defaultdict(int)
 
     def add_node(self, node: Node):
         self.nodes.append(node)
@@ -30,9 +31,11 @@ class Tracker:
         self.tracker_s.sendto(dg.encode(), addr)
 
     def handle_node(self, data, addr):
+        # print(data)
         dg = UDPDatagram.decode(data)
+        # print(dg)
         message = Message.decode(dg.data)
-        print(message)
+        # print(message)
         message_mode = message['mode']
         if message_mode == modes.HAVE:
             self.add_uploader(message, addr)
@@ -62,18 +65,23 @@ class Tracker:
             'ip': addr[0],
             'port': addr[1]
         }
+        self.upload_freq_list[node_name] = self.upload_freq_list[node_name] + 1
         self.uploader_list[filename].append(json.dumps(item))
         self.uploader_list[filename] = list(set(self.uploader_list[filename]))
         if DEBUG_MODE:
             print(f"Current uploader list:\n{self.uploader_list}")
 
     def search_file(self, message, addr):
+        print('here')
         node_name = message['name']
         filename = message['filename']
+        print('filename ',filename)
         search_result = []
         for item_json in self.uploader_list[filename]:
             item = json.loads(item_json)
-            search_result.append((item['name'], (item['ip'], item['port'])))
+            upload_freq = self.upload_freq_list[item['name']]
+            print(upload_freq)
+            search_result.append((item['name'], (item['ip'], item['port']), upload_freq))
 
         response = TrackerToNode(node_name, search_result, filename).encode()
         self.send_datagram(response, addr)
