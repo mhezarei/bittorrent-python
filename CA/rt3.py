@@ -11,25 +11,34 @@ def init() -> (dict, list):
     neighbors = [i for i, cost in enumerate(base_cost[ROUTER_ID]) if
                  cost != INF and i != ROUTER_ID]
     table = make_routing_table(neighbors)
-
     # The initialization DV
     table[ROUTER_ID] = base_cost[ROUTER_ID]
-
     return table, neighbors
 
 
-def update(table: dict, dv: list, src_router: int) -> dict:
-    print('items : ', table.get(src_router), ' from : ', src_router)
-    pass
+def update(table: dict, dv: list, src_router: int, neighbors: list) -> dict:
+    table[src_router] = dv
+    any_change = False
+    for j in range(len(table.get(ROUTER_ID))):
+        min_cost = min(float(table[ROUTER_ID][j]), (float(table[ROUTER_ID][src_router])) + (float(dv[j])))
+        if table[ROUTER_ID][j] != min_cost:
+            # Table modified
+            any_change = True
+
+        table[ROUTER_ID][j] = min_cost
+
+    if any_change:
+        # Transfer modified table to each neighbor
+        transfer_all_neighbors(neighbors, table)
+
+    return table
 
 
 def transfer_all_neighbors(neighbors, table):
     # Transfer to each neighbor
+    print("Sending updates to all the neighbors...\n")
     for n in neighbors:
         transfer(RoutingPacket(ROUTER_ID, n, table[ROUTER_ID]))
-
-    print(f"Made the initial routing table for node {ROUTER_ID} and sent it "
-          f"to all the neighbors.")
 
 
 def transfer(rp: RoutingPacket) -> None:
@@ -39,22 +48,30 @@ def transfer(rp: RoutingPacket) -> None:
     send_s.close()
 
 
-def listen(s, table):
+def listen(s, table, neighbors):
     # Keep listening for updates
     while True:
         c, addr = s.recvfrom(1024)
         rp = pickle.loads(c)
         print(f"In router {ROUTER_ID}, received DV={rp.min_cost} "
-              f"from (ip:{addr[0]}, port:{addr[1]}) which is router {rp.src_router}.")
+              f"from (ip:{addr[0]}, port:{addr[1]}) which is router {rp.src_router}.\n")
 
-        # TODO CALL UPDATE AND UPDATE THE ROUTING TABLE USING THE DATA
-        update(table, rp.min_cost, rp.src_router)
+        table = update(table, rp.min_cost, rp.src_router, neighbors)
+        print_table(table)
+
+
+def print_table(table: dict):
+    print('Current table : ')
+    print('   0    1    2    3')
+    for row in table:
+        print(row, table[row])
+    print()
 
 
 def main():
     rec_sock = create_socket(rec_ports[ROUTER_ID])
     table, neighbors = init()
-    t = threading.Thread(target=listen, args=(rec_sock, table))
+    t = threading.Thread(target=listen, args=(rec_sock, table, neighbors))
     t.start()
     time.sleep(SLEEP_SECS)
     transfer_all_neighbors(neighbors, table)
