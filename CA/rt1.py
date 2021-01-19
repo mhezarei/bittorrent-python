@@ -36,9 +36,9 @@ def update(table: dict, dv: list, src_router: int, neighbors: list) -> dict:
 
 def transfer_all_neighbors(neighbors, table):
     # Transfer to each neighbor
+    print("Sending updates to all the neighbors...\n")
     for n in neighbors:
         transfer(RoutingPacket(ROUTER_ID, n, table[ROUTER_ID]))
-    print("Sent updates to all the neighbors.\n")
 
 
 def transfer(rp: RoutingPacket) -> None:
