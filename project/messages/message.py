@@ -1,4 +1,5 @@
-import yaml
+from __future__ import annotations
+import pickle
 
 
 class Message:
@@ -6,8 +7,8 @@ class Message:
         pass
 
     def encode(self) -> bytes:
-        return yaml.dump(self.__dict__).encode()
+        return pickle.dumps(self.__dict__)
 
     @staticmethod
     def decode(data: bytes) -> dict:
-        return yaml.full_load(data)
+        return pickle.loads(data)

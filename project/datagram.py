@@ -1,7 +1,6 @@
 from __future__ import annotations
-import yaml
-
-MAX_DATA_SIZE = 65507
+import pickle
+from project.utils import MAX_DATA_SIZE
 
 
 class UDPDatagram:
@@ -9,14 +8,14 @@ class UDPDatagram:
         assert 0 < len(data) <= MAX_DATA_SIZE, print(
             f"The data length should be bigger than 0 bytes "
             f"and lower than or equal to {MAX_DATA_SIZE} bytes.")
-
+        
         self.src_port = src_port
         self.dest_port = dest_port
         self.data = data
-
+    
     def encode(self) -> bytes:
-        return yaml.dump(self).encode()
-
+        return pickle.dumps(self)
+    
     @staticmethod
     def decode(data: bytes) -> UDPDatagram:
-        return yaml.full_load(data)
+        return pickle.loads(data)

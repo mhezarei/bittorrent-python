@@ -1,6 +1,7 @@
 import json
 import random
 import threading
+from project.datagram import UDPDatagram
 from project.messages.message import Message
 from project.utils import *
 from collections import defaultdict
@@ -46,7 +47,7 @@ class Tracker:
 
     def listen(self):
         while True:
-            data, addr = self.tracker_s.recvfrom(1024)
+            data, addr = self.tracker_s.recvfrom(BUFFER_SIZE)
             t = threading.Thread(target=self.handle_node, args=(data, addr))
             t.start()
 
