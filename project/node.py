@@ -163,7 +163,7 @@ class Node:
             if msg["idx"] == -1:
                 print(f"Node {self.name} received the end-of-transfer message "
                       f"from {owner[0]}.")
-                free_port(temp_s)
+                free_socket(temp_s)
                 return
             
             self.received_files[filename].append(msg)
@@ -180,7 +180,7 @@ class Node:
             
             # TODO some validation
             
-            free_port(temp_s)
+            free_socket(temp_s)
             return Message.decode(dg.data)["size"]
     
     def set_upload(self, filename: str):
@@ -227,7 +227,7 @@ class Node:
         temp_s = create_socket(give_port())
         self.send_datagram(temp_s, resp_message, ('localhost', dg.src_port))
         print(f"Sending the {filename}'s size to {msg['src_name']}.")
-        free_port(temp_s)
+        free_socket(temp_s)
     
     def send_file(self, filename: str, rng: Tuple[int, int], dest_name: str,
                   dest_port: int):
@@ -247,14 +247,14 @@ class Node:
         print(f"Node {self.name} has sent the end-of-transfer message "
               f"to {dest_name}.")
         
-        free_port(temp_s)
+        free_socket(temp_s)
     
     def exit(self):
         print(f"Node {self.name} exited the program.")
         msg = NodeToTracker(self.name, modes.EXIT, '')
         self.send_datagram(self.rec_s, msg, TRACKER_ADDR)
-        free_port(self.rec_s)
-        free_port(self.send_s)
+        free_socket(self.rec_s)
+        free_socket(self.send_s)
 
 
 def main(name: str, rec_port: int, send_port: int):
