@@ -12,13 +12,9 @@ import pprint
 
 class Tracker:
     def __init__(self):
-        self.nodes = []
         self.tracker_s = create_socket(TRACKER_ADDR[1])
         self.uploader_list = defaultdict(list)
         self.upload_freq_list = defaultdict(int)
-    
-    def add_node(self, node: Node):
-        self.nodes.append(node)
     
     def send_datagram(self, message: bytes, addr: Tuple[str, int]):
         dg = UDPDatagram(port_number(self.tracker_s), addr[1], message)
