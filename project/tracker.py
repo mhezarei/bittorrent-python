@@ -7,8 +7,7 @@ from collections import defaultdict
 from project.node import Node
 from project.messages import modes
 from project.messages.tracker_to_node import TrackerToNode
-
-DEBUG_MODE = True
+import pprint
 
 
 class Tracker:
@@ -42,7 +41,7 @@ class Tracker:
         elif message_mode == modes.NEED:
             self.search_file(message, addr)
         elif message_mode == modes.EXIT:
-            # TODO ADD EXIT
+            self.exit_uploader(message, addr)
             pass
 
     def listen(self):
@@ -68,23 +67,52 @@ class Tracker:
         self.upload_freq_list[node_name] = self.upload_freq_list[node_name] + 1
         self.uploader_list[filename].append(json.dumps(item))
         self.uploader_list[filename] = list(set(self.uploader_list[filename]))
-        if DEBUG_MODE:
-            print(f"Current uploader list:\n{self.uploader_list}")
+
+        self.print_db()
 
     def search_file(self, message, addr):
-        print('here')
         node_name = message['name']
         filename = message['filename']
-        print('filename ', filename)
+        self.print_search_log(node_name, filename)
+
         search_result = []
         for item_json in self.uploader_list[filename]:
             item = json.loads(item_json)
             upload_freq = self.upload_freq_list[item['name']]
-            print(upload_freq)
             search_result.append((item['name'], (item['ip'], item['port']), upload_freq))
 
         response = TrackerToNode(node_name, search_result, filename).encode()
         self.send_datagram(response, addr)
+
+    def exit_uploader(self, message, addr):
+        node_name = message['name']
+        item = {
+            'name': node_name,
+            'ip': addr[0],
+            'port': addr[1]
+        }
+        item_json = json.dumps(item)
+        self.upload_freq_list[node_name] = 0
+        files = self.uploader_list.copy()
+        for file in files:
+            if item_json in self.uploader_list[file]:
+                self.uploader_list[file].remove(item_json)
+            if len(self.uploader_list[file]) == 0:
+                self.uploader_list.pop(file)
+        self.print_db()
+
+    def print_db(self):
+        print('\n************************* Current Database *************************')
+        print('* Upload frequency list :')
+        pprint.pprint(self.upload_freq_list, width=1)
+        print("\n* Files' uploader list :")
+        pprint.pprint(self.uploader_list)
+        print('********************************************************************')
+
+    def print_search_log(self, node_name, filename):
+        print('\n************************* Search Log *************************')
+        print(f'{node_name} is searching for {filename}...')
+        print('****************************************************************')
 
 
 def main():

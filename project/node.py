@@ -33,6 +33,7 @@ class Node:
 
     def start_download(self, filename: str):
         res = self.search(filename)
+        print('res : ', res)
         owners = res["owners"]
         self.split_owners(filename, owners)
         # split the parts and assign each part to a node
@@ -130,9 +131,9 @@ class Node:
         self.send_datagram(resp_message, ('localhost', dg.src_port))
 
     def set_upload(self, filename: str):
-        if filename not in self.files:
-            print(f"Node {self.name} does not have {filename}.")
-            return
+        # if filename not in self.files:
+        #     print(f"Node {self.name} does not have {filename}.")
+        #     return
 
         message = NodeToTracker(self.name, modes.HAVE, filename).encode()
         self.send_datagram(message, TRACKER_ADDR)
@@ -156,6 +157,8 @@ class Node:
 
     def exit(self):
         # tell tracker i want to go :(
+        message = NodeToTracker(self.name, modes.EXIT, "").encode()
+        self.send_datagram(message, TRACKER_ADDR)
         pass
 
 
