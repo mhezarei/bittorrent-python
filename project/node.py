@@ -131,9 +131,9 @@ class Node:
         self.send_datagram(resp_message, ('localhost', dg.src_port))
 
     def set_upload(self, filename: str):
-        # if filename not in self.files:
-        #     print(f"Node {self.name} does not have {filename}.")
-        #     return
+        if filename not in self.files:
+            print(f"Node {self.name} does not have {filename}.")
+            return
 
         message = NodeToTracker(self.name, modes.HAVE, filename).encode()
         self.send_datagram(message, TRACKER_ADDR)
