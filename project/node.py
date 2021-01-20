@@ -3,6 +3,7 @@ import sys
 from itertools import groupby
 from operator import itemgetter
 from threading import Thread
+from project.cryptography.cryptography_unit import crypto_unit
 from project.datagram import UDPDatagram
 from project.messages.file_communication import FileCommunication
 from project.messages.message import Message
@@ -34,7 +35,8 @@ class Node:
     
     def send_datagram(self, s, msg, addr):
         dg = UDPDatagram(port_number(s), addr[1], msg.encode())
-        s.sendto(dg.encode(), addr)
+        enc = crypto_unit.encrypt(dg)
+        s.sendto(enc, addr)
         return dg
     
     def self_send_datagram(self, msg: Message, addr: Tuple[str, int]):
@@ -62,7 +64,7 @@ class Node:
         
         while True:
             data, addr = temp_s.recvfrom(BUFFER_SIZE)
-            dg: UDPDatagram = UDPDatagram.decode(data)
+            dg: UDPDatagram = crypto_unit.decrypt(data)
             if dg.src_port != TRACKER_ADDR[1]:
                 raise ValueError(f"Someone other than the tracker with "
                                  f"port:{dg.src_port} sent {self.name} "
@@ -149,7 +151,7 @@ class Node:
         
         while True:
             data, addr = temp_s.recvfrom(BUFFER_SIZE)
-            dg: UDPDatagram = UDPDatagram.decode(data)
+            dg: UDPDatagram = crypto_unit.decrypt(data)
             
             msg = Message.decode(dg.data)
             # msg now contains the actual bytes of the data for that file.
@@ -176,7 +178,7 @@ class Node:
         
         while True:
             data, addr = temp_s.recvfrom(BUFFER_SIZE)
-            dg: UDPDatagram = UDPDatagram.decode(data)
+            dg: UDPDatagram = crypto_unit.decrypt(data)
             
             # TODO some validation
             
@@ -207,7 +209,7 @@ class Node:
     def start_listening(self):
         while True:
             data, addr = self.rec_s.recvfrom(BUFFER_SIZE)
-            dg: UDPDatagram = UDPDatagram.decode(data)
+            dg: UDPDatagram = crypto_unit.decrypt(data)
             msg = Message.decode(dg.data)
             if "size" in msg.keys() and msg["size"] == -1:
                 # meaning someone needs the file size

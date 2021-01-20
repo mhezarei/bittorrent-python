@@ -1,10 +1,10 @@
 import json
 import threading
+from project.cryptography.cryptography_unit import crypto_unit
 from project.datagram import UDPDatagram
 from project.messages.message import Message
 from project.utils import *
 from collections import defaultdict
-from project.node import Node
 from project.messages import modes
 from project.messages.tracker_to_node import TrackerToNode
 import pprint
@@ -18,10 +18,11 @@ class Tracker:
     
     def send_datagram(self, message: bytes, addr: Tuple[str, int]):
         dg = UDPDatagram(port_number(self.tracker_s), addr[1], message)
-        self.tracker_s.sendto(dg.encode(), addr)
+        enc = crypto_unit.encrypt(dg)
+        self.tracker_s.sendto(enc, addr)
     
     def handle_node(self, data, addr):
-        dg = UDPDatagram.decode(data)
+        dg = crypto_unit.decrypt(data)
         message = Message.decode(dg.data)
         message_mode = message['mode']
         if message_mode == modes.HAVE:

@@ -5,13 +5,13 @@ from project.datagram import UDPDatagram
 
 class CryptographyUnit:
     def __init__(self):
-        if os.path.isfile("key.key"):
+        if os.path.isfile("cryptography/key.key"):
             print("Found the key!")
-            self.key = open("key.key", "rb").read()
+            self.key = open("cryptography/key.key", "rb").read()
         else:
             print("Key not found! Making a new one.")
             self.key = Fernet.generate_key()
-            with open("key.key", "wb") as f:
+            with open("cryptography/key.key", "wb") as f:
                 f.write(self.key)
 
     def encrypt(self, obj: UDPDatagram) -> bytes:
@@ -23,3 +23,6 @@ class CryptographyUnit:
         f = Fernet(self.key)
         dec = f.decrypt(data)
         return UDPDatagram.decode(dec)
+
+
+crypto_unit = CryptographyUnit()

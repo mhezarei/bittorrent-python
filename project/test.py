@@ -1,6 +1,13 @@
 from itertools import groupby
 from operator import itemgetter
 
+from project.cryptography.cryptography_unit import crypto_unit
+from project.datagram import UDPDatagram
+
+u = UDPDatagram(12, 1231, b"asdfasdfasdf")
+print(crypto_unit.encrypt(u).__sizeof__())
+
+
 
 lst = [
     {'src_name': 'node_B', 'dest_name': 'node_A', 'filename': 'file1', 'range': (445952, 445953), 'idx': 0},

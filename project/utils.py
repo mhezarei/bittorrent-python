@@ -11,7 +11,7 @@ occupied_ports = []
 
 
 def split_file(path: str, rng: Tuple[int, int],
-               chunk_size: int = MAX_DATA_SIZE - 2000) -> list:
+               chunk_size: int = MAX_DATA_SIZE - 20000) -> list:
     assert chunk_size > 0, print("The chunk size should be bigger than 0.")
     
     with open(path, "r+b") as f:
