@@ -38,6 +38,7 @@ def transfer_all_neighbors(neighbors, table):
     # Transfer to each neighbor
     print("Sending updates to all the neighbors...\n")
     for n in neighbors:
+        time.sleep(0.1)
         transfer(RoutingPacket(ROUTER_ID, n, table[ROUTER_ID]))
 
 
@@ -71,6 +72,7 @@ def print_table(table: dict):
 def main():
     rec_sock = create_socket(rec_ports[ROUTER_ID])
     table, neighbors = init()
+    print_table(table)
     t = threading.Thread(target=listen, args=(rec_sock, table, neighbors))
     t.start()
     time.sleep(SLEEP_SECS)
