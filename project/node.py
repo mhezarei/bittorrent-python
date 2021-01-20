@@ -71,12 +71,6 @@ class Node:
                                  f"the search datagram.")
             return Message.decode(dg.data)
     
-    @staticmethod
-    def split_size(size: int, num_parts: int):
-        step = size / num_parts
-        return [(round(step * i), round(step * (i + 1))) for i in
-                range(num_parts)]
-    
     def split_owners(self, filename: str, owners: list):
         owners = [o for o in owners if o[0] != self.name]
         owners = sorted(owners, key=lambda x: x[2], reverse=True)
@@ -130,6 +124,12 @@ class Node:
         # TODO check if there is a missing range
         
         # TODO add algorithm
+    
+    @staticmethod
+    def split_size(size: int, num_parts: int):
+        step = size / num_parts
+        return [(round(step * i), round(step * (i + 1))) for i in
+                range(num_parts)]
     
     def sort_received_files(self, filename: str):
         sort_by_range = sorted(self.received_files[filename],
