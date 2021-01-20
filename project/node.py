@@ -170,7 +170,7 @@ class Node:
     
     def ask_file_size(self, filename: str, owner: tuple) -> int:
         # size == -1 means asking the size
-        message = SizeInformation(self.name, owner[0], filename, -1)
+        message = SizeInformation(self.name, owner[0], filename)
         temp_s = create_socket(give_port())
         self.send_datagram(temp_s, message, owner[1])
         
@@ -263,12 +263,12 @@ def main(name: str, rec_port: int, send_port: int):
     command = input()
     while True:
         if "upload" in command:
-            # torrent -upload filename
-            filename = command.split(' ')[2]
+            # torrent -setMode upload filename
+            filename = command.split(' ')[3]
             node.set_upload(filename)
         elif "download" in command:
-            # torrent -download filename
-            filename = command.split(' ')[2]
+            # torrent -setMode download filename
+            filename = command.split(' ')[3]
             t2 = Thread(target=node.start_download, args=(filename,))
             t2.setDaemon(True)
             t2.start()

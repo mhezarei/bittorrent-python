@@ -3,7 +3,7 @@ from project.messages.message import Message
 
 class SizeInformation(Message):
     def __init__(self, src_name: str, dest_name: str, filename: str,
-                 size: int):
+                 size: int = -1):
         """
         examples:
             size of the file:
