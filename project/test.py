@@ -26,3 +26,13 @@ for k, v in haha:
     vl_res = sorted(vl, key=itemgetter('idx'))
     for i in vl_res:
         print(k, i)
+
+
+lst = [
+    ('node_C', ('127.0.0.1', 33333), 1),
+    ('node_C', ('127.0.0.1', 33332), 2),
+    ('node_C', ('127.0.0.1', 33334), 3),
+    ('node_B', ('127.0.0.1', 22220), 0),
+]
+
+print(sorted(lst, key=lambda x: x[2]))
