@@ -1,17 +1,17 @@
 import os
 from cryptography.fernet import Fernet
-from project.datagram import UDPDatagram
+from datagram import UDPDatagram
 
 
 class CryptographyUnit:
     def __init__(self):
-        if os.path.isfile("cryptography/key.key"):
+        if os.path.isfile("crypto/key.key"):
             print("Found the key!")
-            self.key = open("cryptography/key.key", "rb").read()
+            self.key = open("crypto/key.key", "rb").read()
         else:
             print("Key not found! Making a new one.")
             self.key = Fernet.generate_key()
-            with open("cryptography/key.key", "wb") as f:
+            with open("crypto/key.key", "wb") as f:
                 f.write(self.key)
 
     def encrypt(self, obj: UDPDatagram) -> bytes:

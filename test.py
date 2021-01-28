@@ -1,8 +1,8 @@
 from itertools import groupby
 from operator import itemgetter
 
-from project.cryptography.cryptography_unit import crypto_unit
-from project.datagram import UDPDatagram
+from cryptography.cryptography_unit import crypto_unit
+from datagram import UDPDatagram
 
 u = UDPDatagram(12, 1231, b"asdfasdfasdf")
 print(crypto_unit.encrypt(u).__sizeof__())

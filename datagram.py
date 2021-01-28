@@ -1,6 +1,6 @@
 from __future__ import annotations
 import pickle
-from project.utils import MAX_DATA_SIZE
+from utils import MAX_DATA_SIZE
 
 
 class UDPDatagram:

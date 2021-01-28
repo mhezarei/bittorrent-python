@@ -3,14 +3,14 @@ import sys
 from itertools import groupby
 from operator import itemgetter
 from threading import Thread
-from project.cryptography.cryptography_unit import crypto_unit
-from project.datagram import UDPDatagram
-from project.messages.file_communication import FileCommunication
-from project.messages.message import Message
-from project.messages.size_information import SizeInformation
-from project.messages.node_to_tracker import NodeToTracker
-from project.utils import *
-from project.messages import modes
+from crypto.cryptography_unit import crypto_unit
+from datagram import UDPDatagram
+from messages import modes
+from messages.file_communication import FileCommunication
+from messages.message import Message
+from messages.node_to_tracker import NodeToTracker
+from messages.size_information import SizeInformation
+from utils import *
 
 SELECT_COUNT = 2
 

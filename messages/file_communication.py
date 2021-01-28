@@ -1,5 +1,5 @@
 from typing import Tuple
-from project.messages.message import Message
+from messages.message import Message
 
 
 class FileCommunication(Message):

@@ -1,4 +1,4 @@
-from project.messages.message import Message
+from messages.message import Message
 
 
 class SizeInformation(Message):

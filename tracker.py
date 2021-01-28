@@ -1,13 +1,13 @@
 import json
-import threading
-from project.cryptography.cryptography_unit import crypto_unit
-from project.datagram import UDPDatagram
-from project.messages.message import Message
-from project.utils import *
-from collections import defaultdict
-from project.messages import modes
-from project.messages.tracker_to_node import TrackerToNode
 import pprint
+import threading
+from collections import defaultdict
+from crypto.cryptography_unit import crypto_unit
+from datagram import UDPDatagram
+from messages import modes
+from messages.message import Message
+from messages.tracker_to_node import TrackerToNode
+from utils import *
 
 
 class Tracker:
