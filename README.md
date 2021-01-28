@@ -51,11 +51,11 @@ Now the `node.py` waits for your command to be entered. Possible commands are:
 - `torrent -setMode download <filename>` to start downloading a file.
 - `torrent exit` to exit the network.
 
-The submitted report of this project is also added under the name 
-`Computer Networks Final Project Report.pdf` which contains the complete
-explanation of this program and is written in persian.
-
 ## More
+`project_files/` contains two files: the project explanation and the project 
+report which is a complete guide of how this program works. Both written in
+persian.
+
 These are some improvements that **might** be done in the future:
 - Adding Documentation.
 - Not every node has the full file, so we need to assign the uploaders their
