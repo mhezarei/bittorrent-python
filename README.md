@@ -1,6 +1,8 @@
 # bittorrent-python
 This repository contains the implementation of a bittorrent-like P2P network written
-in python and was the course project of the Fall 2020 Computer Networks course.
+in python in collabration with 
+[@arman-aminian](https://github.com/arman-aminian "Arman Aminian") and was 
+the course project of the Fall 2020 Computer Networks course.
 
 Each node in the network first contacts the tracker to transfer the essential
 information and then acts based on that.
